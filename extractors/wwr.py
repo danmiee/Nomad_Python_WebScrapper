@@ -1,16 +1,17 @@
-from requests import get
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+options = Options()
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
+browser = webdriver.Chrome(options=options)
+browser.get("https://kr.indeed.com/jobs?q=python&limit=50")
 
 def extract_wwr_jobs(keyword):
-  base_url = "https://weworkremotely.com/remote-jobs/search?term="
-  response = get(f"{base_url}{keyword}")
   
-  if response.status_code != 200:
-    print("Can't request website")
-
-  else:
     results = []
-    soup = BeautifulSoup(response.text, 'html.parser')
+    soup = BeautifulSoup(browser.page_source, "html.parser")
     jobs = soup.find_all('section', class_="jobs")
   
     for job_section in jobs:
