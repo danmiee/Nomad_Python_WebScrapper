@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
+
 # pagination - 페이지 개수 확인하기
 # 페이지번호 우클릭 > inspect(검사) : 개발자도구에 표시됨(navigation 구성 확인) > 검색페이지가 5페이지 이상인지 확인
 # 이 페이지는 정보 추출을 위한 곳이므로 페이지 개수 확인 코드는 함수로 작성
@@ -11,20 +12,33 @@ def get_page_count(keyword):
   options.add_argument("--no-sandbox")
   options.add_argument("--disable-dev-shm-usage")
   browser = webdriver.Chrome(options=options)
-  browser.get(f"https://kr.indeed.com/jobs?q={keyword}&limit=50")
+  browser.get(f"https://kr.indeed.com/jobs?q={keyword}")
 
   soup = BeautifulSoup(browser.page_source, "html.parser")
   # find 내부에서 딕셔너리 호출
-  pagination = soup.find("nav", {"aria-label":"pagination"})
+  pagination = soup.find("nav", {"aria-label": "pagination"})
   pages = pagination.select("div a")
-  if len(pages)==0:
-    return 1
+  count = len(pages)+1
+  
+  for page in pages:
+    if page['aria-label']=="Previous Page":
+      count -= 1
+    if page['aria-label']=="Next Page":
+      count -= 1
+  
+  if count >= 5:
+    return 5
+  else:
+    return count
+
+print(get_page_count("ruby"))
 
 # 각 페이지에 요청을 보내 데이터 추출
 
 
 # 페이지에서 데이터 추출
 def extract_indeed_jobs(keyword):
+  pages = get_page_count(keyword)
   options = Options()
   # replit에만 있음
   options.add_argument("--no-sandbox")
