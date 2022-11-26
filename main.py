@@ -5,7 +5,6 @@ from selenium.webdriver.chrome.options import Options
 
 # pagination - 페이지 개수 확인하기
 # 페이지번호 우클릭 > inspect(검사) : 개발자도구에 표시됨(navigation 구성 확인) > 검색페이지가 5페이지 이상인지 확인
-# 이 페이지는 정보 추출을 위한 곳이므로 페이지 개수 확인 코드는 함수로 작성
 def get_page_count(keyword):
   options = Options()
   # replit에만 있음
@@ -39,23 +38,24 @@ print(get_page_count("ruby"))
 # 페이지에서 데이터 추출
 def extract_indeed_jobs(keyword):
   pages = get_page_count(keyword)
-  options = Options()
-  # replit에만 있음
-  options.add_argument("--no-sandbox")
-  options.add_argument("--disable-dev-shm-usage")
-  browser = webdriver.Chrome(options=options)
-  browser.get(f"https://kr.indeed.com/jobs?q={keyword}&limit=50")
-
-  results = []
-  soup = BeautifulSoup(browser.page_source, "html.parser")
-  job_list = soup.find("ul", class_="jobsearch-ResultsList")
-  # 자식요소만 가져오기
-  jobs = job_list.find_all("li", recursive=False)
-  # 구인정보 가져오기
-  for job in jobs:
-    # class=mosaic-zone인 태그 제외
-    zone = job.find("div", class_="mosaic-zone")
-    if zone == None:
+  for count in range(pages):
+    options = Options()
+    # replit에만 있음
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    browser = webdriver.Chrome(options=options)
+    browser.get(f"https://kr.indeed.com/jobs?q={keyword}")
+  
+    results = []
+    soup = BeautifulSoup(browser.page_source, "html.parser")
+    job_list = soup.find("ul", class_="jobsearch-ResultsList")
+    # 자식요소만 가져오기
+    jobs = job_list.find_all("li", recursive=False)
+    # 구인정보 가져오기
+    for job in jobs:
+      # class=mosaic-zone인 태그 제외
+      zone = job.find("div", class_="mosaic-zone")
+      if zone == None:
 
       # li에서 job 추출 : h2 class="jobTitle"
       # h2 > a의 링크, label 저장
