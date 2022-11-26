@@ -33,6 +33,7 @@ def get_page_count(keyword):
 def extract_indeed_jobs(keyword):
   pages = get_page_count(keyword)
   results = []
+  print("Found", pages, "pages")
   # 각 페이지에 요청을 보내 데이터 추출
   for page in range(pages):
     options = Options()
@@ -42,6 +43,7 @@ def extract_indeed_jobs(keyword):
     browser = webdriver.Chrome(options=options)
     # page가 바뀌면 시작페이지 바뀌도록 &start={page*10} 삽입
     browser.get(f"https://kr.indeed.com/jobs?q={keyword}&start={page*10}")
+    print("Requesting", f"https://kr.indeed.com/jobs?q={keyword}&start={page*10}")
     soup = BeautifulSoup(browser.page_source, "html.parser")
     job_list = soup.find("ul", class_="jobsearch-ResultsList")
     # 자식요소만 가져오기
