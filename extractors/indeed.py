@@ -75,10 +75,11 @@ def extract_indeed_jobs(keyword):
         # region, city, position, company name : wws에서 찾아뒀음
         job_data = {
           # 링크 가져올 때 상대경로 여부에 주의
+          # csv로 변환 시 오류 방지를 위해 콤마를 다른 문자로 변경
           'link': f"https://kr.indeed.com{link}",
-          'company': company.string,
-          'location': location.string,
-          'position': title
+          'company': company.string.replace(",", " "),
+          'location': location.string.replace(",", " "),
+          'position': title.replace(",", " ")
         }
         results.append(job_data)
   return results

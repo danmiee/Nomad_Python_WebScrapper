@@ -24,10 +24,11 @@ def extract_wwr_jobs(keyword):
       company, kind, region = anchor.find_all('span', class_="company")
       title = anchor.find('span', class_='title')
       job_data = {
+        # csv로 변환 시 오류 방지를 위해 콤마를 다른 문자로 변경
         'link': f"https://weworkremotely.com/{link}",
-        'company': company.string,
-        'region': region.string,
-        'position': title.string
+        'company': company.string.replace(",", " "),
+        'region': region.string.replace(",", " "),
+        'position': title.string.replace(",", " ")
       }
       results.append(job_data)
   return results
