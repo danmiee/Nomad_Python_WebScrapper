@@ -1,12 +1,11 @@
-from extractors.indeed import extract_indeed_jobs
-from extractors.wwr import extract_wwr_jobs
-from file import save_to_file
+from flask import Flask
 
-keyword = input("What do you want to search for?")
+# 플라스크 애플리케이션 생성
+app = Flask("JobScrapper")
 
-indeed = extract_indeed_jobs(keyword)
-wwr = extract_wwr_jobs(keyword)
+@app.route("/")
+def home():
+  return 'hey there!'
 
-jobs = indeed + wwr
-
-save_to_file(keyword, jobs)
+# 이 코드는 Replit에서 만든 VM에서 실행되므로 Replit에게 웹사이트 만들거니 접속을 열어달라고 알려주기
+app.run("0.0.0.0")
