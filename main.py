@@ -8,6 +8,8 @@ from extractors.wwr import extract_wwr_jobs
 # 플라스크 애플리케이션 생성
 app = Flask("JobScrapper")
 
+db = {}
+
 # request - springboot 어노테이션 역할
 @app.route("/")
 def home():
@@ -18,9 +20,15 @@ def home():
 @app.route("/search")
 def search():
   keyword = request.args.get("keyword")
-  indeed = extract_indeed_jobs(keyword)
-  wwr = extract_wwr_jobs(keyword)
-  jobs = indeed + wwr
+  # keyword가 db 안에 있으면 그 값을 리턴
+  if keyword in db:
+    jobs = db[keyword]
+  else:
+    # 없으면 검색해서 db에 저장하고 리턴
+    indeed = extract_indeed_jobs(keyword)
+    wwr = extract_wwr_jobs(keyword)
+    jobs = indeed + wwr
+    db[keyword] = jobs
   return render_template("search.html", keyword = keyword, jobs = jobs)
 
 
