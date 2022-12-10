@@ -9,8 +9,11 @@
 </head>
 <body>
     <main class="container">
-  <!--  변수 받기  -->
-  <h1>Search Resultes for "{{keyword}}": </h1>
+      <hgroup>
+        <h1>Search Resultes for "{{keyword}}": </h1>
+<!--  target="_blank" : 새 탭으로 열기  -->
+        <a target="_blank" href="/export?keyword={{keyword}}">Export to file</a>
+      </hgroup>
   <figure>
   <table role="grid">
     <thead>
